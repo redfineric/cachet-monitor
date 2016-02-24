@@ -52,7 +52,17 @@ func (monitor *Monitor) doRequest() bool {
 		}
 	}
 
-	resp, err := client.Get(monitor.URL)
+    req, err := http.NewRequest("GET", monitor.URL, nil)
+
+	if err != nil {
+		errString := err.Error()
+		monitor.LastFailReason = &errString
+		return false
+	}
+
+    req.Header.Set("User-Agent", "cache-monitor/0.1")
+    resp, err := client.Do(req)
+
 	if err != nil {
 		errString := err.Error()
 		monitor.LastFailReason = &errString
